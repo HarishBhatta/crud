@@ -33,6 +33,23 @@ app.get("/api/product/:id", async (req, res) => {
   }
 });
 
+//Update
+app.patch("/api/product/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id, req.body);
+    if (!product) {
+      return res.status(404).json({ message: "Product Not Found" });
+    }
+    const updatedProduct = await Product.findById(id);
+    res
+      .status(200)
+      .json({ updatedProduct, message: "Product Updated Successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 mongoose
   .connect(
     "mongodb+srv://bhattaharish:root@cluster0.v3xv5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
