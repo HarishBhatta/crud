@@ -50,6 +50,29 @@ app.patch("/api/product/:id", async (req, res) => {
   }
 });
 
+//Delete a Product
+
+app.delete("/api/product/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("req.params");
+    // Check if the provided id is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID format" });
+    }
+    const product = await Product.findByIdAndDelete(id);
+    console.log(product);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ message: "Could Not Find The File You Were Looking For" });
+    }
+    return res.status(200).json({ message: "Product Deleted" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 mongoose
   .connect(
     "mongodb+srv://bhattaharish:root@cluster0.v3xv5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
